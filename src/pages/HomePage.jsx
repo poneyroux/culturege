@@ -11,7 +11,10 @@ export default function HomePage() {
 
   useEffect(() => {
     const fetchThemes = async () => {
-      const { data } = await supabase.from("themes").select("*").order("name");
+      const { data } = await supabase
+        .from("themes")
+        .select("*")
+        .order("position", { ascending: true });
       console.log("Themes récupérés avec images:", data); // Debug pour voir les images
       setThemes(data || []);
       setLoading(false);
