@@ -1,0 +1,127 @@
+/* src/pages/admin/AdminArticles.css */
+.admin-container {
+  padding: 20px;
+}
+
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+/* Boutons */
+.btn {
+  display: inline-block;
+  padding: 12px 20px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: bold;
+  color: #fff;
+  background: #2196f3;
+  font-size: 0.9rem;
+}
+.btn--primary {
+  background: #2196f3;
+}
+.btn--success {
+  background: #4caf50;
+}
+.btn--danger {
+  background: #f44336;
+}
+.btn--small {
+  padding: 6px 12px;
+  border-radius: 4px;
+}
+
+/* Loader */
+.admin-loader {
+  padding: 20px;
+}
+
+/* Tableau */
+.table-wrapper {
+  overflow-x: auto;
+}
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.table th,
+.table td {
+  padding: 15px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+.table th {
+  background: #f5f5f5;
+}
+.txt-center {
+  text-align: center;
+}
+
+/* Liens et métadonnées */
+.link-title {
+  font-weight: 600;
+  font-size: 1.1rem;
+  text-decoration: none;
+  color: #2196f3;
+}
+.created-at {
+  margin-top: 5px;
+  font-size: 0.8rem;
+  color: #999;
+}
+
+/* Badges */
+.badge {
+  color: #fff;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+.badge--published {
+  background: #27ae60;
+}
+.badge--draft {
+  background: #f39c12;
+}
+
+/* Badge thème */
+.theme-badge {
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 15px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* Actions */
+.action-group {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+/* Texte */
+.txt-muted {
+  color: #999;
+}
+
+/* État vide */
+.empty-state {
+  text-align: center;
+  padding: 40px;
+  background: #f9f9f9;
+  border-radius: 8px;
+  margin-top: 20px;
+}

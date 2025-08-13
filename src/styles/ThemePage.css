@@ -1,0 +1,219 @@
+/* ───── VARIABLES GLOBALES (si déjà définies dans un autre fichier, supprime ce bloc) ───── */
+:root {
+  --color-text-primary: #1a1a1a;
+  --color-text-secondary: #6b7280;
+  --color-border: #6b7280;
+  --color-border-hover: #d1d5db;
+  --color-background: #fafafa;
+  --color-surface: #ffffff;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.06);
+  --spacing-xs: 0.5rem;
+  --spacing-sm: 1rem;
+  --spacing-md: 1.5rem;
+  --spacing-lg: 2rem;
+}
+
+/* ───── PAGE & CONTENEUR ───── */
+.theme-main-page {
+  min-height: 100vh;
+  background: var(--color-background);
+}
+
+.theme-container {
+  width: 80%;
+  margin: 0 auto;
+  padding: var(--spacing-lg) 0;
+}
+
+@media (max-width: 768px) {
+  .theme-container {
+    width: 100%;
+    padding: var(--spacing-md) var(--spacing-sm);
+  }
+}
+
+/* ───── TITRE DU THÈME ───── */
+.theme-title {
+  font-size: 2.8rem;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--theme-color, #000);
+  text-align: center;
+  margin: 0 0 var(--spacing-lg) 0;
+  line-height: 1.2;
+  position: relative;
+  transition: color 0.3s ease;
+}
+
+.theme-title:hover {
+  color: color-mix(in srgb, var(--theme-color, #000) 80%, #000);
+}
+
+.theme-title::after {
+  content: "";
+  position: absolute;
+  bottom: -6px;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background: var(--theme-color, #000);
+  transform: translateX(-50%);
+  transition: width 0.6s ease;
+}
+
+.theme-title:hover::after {
+  width: 120px;
+}
+
+/* ───── FILTRES CATÉGORIES ───── */
+.category-filters {
+  display: flex;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  flex-wrap: wrap;
+  margin-bottom: var(--spacing-lg);
+}
+
+.filter-button {
+  padding: 0.55rem 1.2rem;
+  border: 1px solid var(--theme-color, #000);
+  background: var(--color-surface);
+  color: var(--theme-color, #000);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  white-space: nowrap;
+}
+
+.filter-button:hover,
+.filter-button.active {
+  background: var(--theme-color, #000);
+  color: #fff;
+}
+
+/* ───── LISTE D’ARTICLES ───── */
+.articles-grid {
+  /* flex-col + gap pour conserver ton JSX */
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+/* ───── CARTE ARTICLE ───── */
+.article-card {
+  display: flex;
+  width: 100%;
+  min-height: 180px;
+  background: #fff;
+  border: 1px solid var(--color-border);
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.article-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 0 0 #d1d5db;
+}
+
+/* Contenu gauche */
+.article-content {
+  flex: 1;
+  padding: var(--spacing-md);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.65rem;
+}
+
+/* Titre */
+.article-title-theme {
+  font-size: 1.4rem;
+  font-weight: 340;
+  color: #000;
+  margin: 0;
+  line-height: 1.35;
+  position: relative;
+}
+
+.article-title-theme::after {
+  content: "";
+  position: absolute;
+  bottom: -3px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--theme-color, #000);
+  transition: width 0.6s ease;
+}
+
+.article-card:hover .article-title-theme::after {
+  width: 100%;
+}
+
+/* Résumé */
+.article-summary {
+  font-size: 0.95rem;
+  color: var(--color-text-secondary);
+  line-height: 1.45;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+
+/* Bouton optionnel */
+.article-button {
+  margin-top: auto;
+  align-self: flex-start;
+  padding: 0.45rem 0.9rem;
+  border: 1px solid var(--theme-color, #000);
+  background: #fff;
+  color: var(--theme-color, #000);
+  font-size: 0.8rem;
+  font-weight: 600;
+  transition: all 0.25s ease;
+}
+
+.article-button:hover {
+  background: var(--theme-color, #000);
+  color: #fff;
+}
+
+/* Image droite */
+.article-image {
+  flex: 0 0 240px;
+  height: auto;
+  overflow: hidden;
+  border-left: 1px solid var(--color-border);
+}
+
+.article-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.25s ease;
+}
+
+.article-card:hover .article-image img {
+  transform: scale(1.05);
+}
+
+/* ───── RESPONSIVE ───── */
+@media (max-width: 768px) {
+  .theme-title {
+    font-size: 2.2rem;
+  }
+
+  .article-card {
+    flex-direction: column;
+  }
+
+  .article-image {
+    flex: 0 0 auto;
+    height: 190px;
+    border-left: none;
+    border-top: 1px solid var(--color-border);
+  }
+}

@@ -1,0 +1,159 @@
+.page {
+  padding: 20px;
+  max-width: 1000px;
+  margin: auto;
+}
+.page__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+.card {
+  background: #fff;
+  border-radius: 8px;
+  padding: 25px;
+  margin-bottom: 25px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+}
+.grid2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+.field {
+  margin-bottom: 20px;
+}
+.field label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 600;
+}
+.field input,
+.field select,
+.field textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+textarea {
+  min-height: 80px;
+}
+.btn {
+  cursor: pointer;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 20px;
+  font-weight: 600;
+  color: #fff;
+  font-size: 0.9rem;
+  text-decoration: none;
+  display: inline-block;
+}
+.btn--grey {
+  background: #6c757d;
+}
+.btn--green {
+  background: #28a745;
+}
+.btn--blue {
+  background: #17a2b8;
+}
+.btn--orange {
+  background: #ff9800;
+  color: #000;
+}
+.btn--purple {
+  background: #6f42c1;
+}
+.btn--red {
+  background: #dc3545;
+}
+.btn--xs {
+  padding: 4px 10px;
+  font-size: 0.8rem;
+}
+.btn-group {
+  display: flex;
+  gap: 8px;
+}
+.blocks__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+.block {
+  border: 1px solid #e6e6e6;
+  border-radius: 6px;
+  padding: 15px;
+  margin-bottom: 15px;
+}
+.block__title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.questions {
+  margin-top: 15px;
+}
+.questions header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+.question-input {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin-bottom: 6px;
+}
+.empty {
+  text-align: center;
+  color: #888;
+  background: #fafafa;
+  padding: 20px;
+  border-radius: 6px;
+}
+.loader {
+  padding: 20px;
+}
+.actions {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 40px;
+}
+
+.ql-editor,
+.block .ql-container {
+  min-height: 320px;
+}
+
+.wiki-links header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+.wiki-item {
+  display: grid;
+  grid-template-columns: 2fr 3fr auto;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.wiki-label,
+.wiki-url {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}

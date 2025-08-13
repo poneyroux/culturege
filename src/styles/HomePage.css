@@ -1,0 +1,340 @@
+/* ===== IMPORTS ET VARIABLES ===== */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+
+:root {
+  --color-text-primary: #1a1a1a;
+  --color-text-secondary: #6b7280;
+  --color-border: #e5e7eb;
+  --color-border-hover: #d1d5db;
+  --color-background: #fafafa;
+  --color-surface: #ffffff;
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --border-radius: 0;
+  --spacing-xs: 0.5rem;
+  --spacing-sm: 1rem;
+  --spacing-md: 1.5rem;
+  --spacing-lg: 2rem;
+  --spacing-xl: 3rem;
+}
+
+/* ===== STYLE GLOBAL PAGE D'ACCUEIL ===== */
+.homepage {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-background);
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  color: var(--color-text-primary);
+  line-height: 1.6;
+}
+
+/* ===== CONTENU PRINCIPAL ===== */
+.homepage-content {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+}
+
+/* ===== LISTE VERTICALE DES THÈMES (MENU BURGER) ===== */
+/* .themes-list {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: var(--color-surface);
+  transform: translateY(-100%);
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 50;
+}
+
+.themes-list.visible {
+  transform: translateY(0);
+}
+
+.theme-item {
+  display: flex;
+  align-items: center;
+  padding: var(--spacing-md) var(--spacing-lg);
+  margin: var(--spacing-xs) 0;
+  width: 80vw;
+  max-width: 500px;
+  border-bottom: 1px solid var(--color-border);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.theme-item:hover {
+  background-color: var(--color-background);
+  transform: translateX(4px);
+}
+
+.theme-item:last-child {
+  border-bottom: none;
+}
+
+.theme-emoji {
+  font-size: 1.5rem;
+  margin-right: var(--spacing-md);
+}
+
+.theme-name {
+  font-size: 1.125rem;
+  font-weight: 500;
+  color: var(--color-text-primary);
+} */
+
+/* ===== GRILLE DES CARTES ===== */
+.themes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: var(--spacing-lg);
+  padding: var(--spacing-xl) var(--spacing-lg);
+  max-width: 1400px;
+  margin: 0 auto;
+  opacity: 1;
+  transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.themes-grid.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ===== CARTES - IMAGE PLEINE TAILLE ===== */
+/* ===== CARTES - IMAGE VRAIMENT PLEINE TAILLE ===== */
+.theme-card {
+  display: block;
+  height: 280px;
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+  position: relative;
+  margin: 0;
+  padding: 0;
+  border: 1px solid black;
+  box-shadow: 0 4px 0 0 #d1d5db;
+}
+
+.theme-card:hover {
+  transform: translateY(-4px);
+  /* Ajout du shadow seulement au hover pour éviter l'espacement permanent */
+  box-shadow: var(--shadow-lg);
+}
+
+/* Image VRAIMENT pleine carte - aucun espace */
+.theme-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  display: block;
+  margin: 0;
+  padding: 0;
+}
+/*  */
+
+.theme-card:hover .theme-image {
+  transform: scale(1.05);
+}
+
+/* Conteneur pour les rectangles - même côté avec espacement */
+.theme-content {
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+/* Rectangle blanc pour le nom */
+.theme-card-name {
+  display: inline-block;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0;
+  color: var(--color-text-primary);
+  letter-spacing: -0.025em;
+  line-height: 1.3;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-sm);
+  transition: all 0.3s ease;
+}
+
+/* Rectangle blanc pour le bouton - MÊME CÔTÉ */
+.theme-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  letter-spacing: 0.025em;
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Flèche qui apparaît au hover */
+.theme-button::before {
+  content: "→";
+  margin-right: 0;
+  opacity: 0;
+  transform: translateX(-10px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.theme-card:hover .theme-button::before {
+  margin-right: var(--spacing-xs);
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.theme-card:hover .theme-button {
+  background: var(--theme-color, #3b82f6);
+  color: white;
+  border-color: var(--theme-color, #3b82f6);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.theme-card:hover .theme-card-name {
+  background: rgba(255, 255, 255, 1);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .homepage-title {
+    font-size: 1.125rem;
+  }
+
+  .themes-grid {
+    grid-template-columns: 1fr;
+    padding: var(--spacing-lg) var(--spacing-md);
+    gap: var(--spacing-lg);
+  }
+
+  .theme-item {
+    width: 90vw;
+    padding: var(--spacing-md);
+  }
+
+  .theme-card {
+    height: 240px;
+  }
+
+  .theme-content {
+    bottom: 12px;
+    left: 12px;
+  }
+
+  .theme-card-name {
+    font-size: 1rem;
+  }
+
+  .theme-button {
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .themes-grid {
+    padding: var(--spacing-md) var(--spacing-sm);
+  }
+
+  .homepage-header {
+    padding: 0 var(--spacing-sm);
+  }
+
+  .theme-card {
+    height: 220px;
+  }
+
+  .theme-content {
+    bottom: 8px;
+    left: 8px;
+  }
+}
+
+/* ===== ÉTATS DE CHARGEMENT ===== */
+.loading-state {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  font-size: 1.125rem;
+  color: var(--color-text-secondary);
+  font-weight: 500;
+}
+
+.no-themes {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  text-align: center;
+  color: var(--color-text-secondary);
+  gap: var(--spacing-md);
+}
+
+/* ===== ANIMATIONS D'APPARITION ===== */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.theme-card {
+  animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.theme-card:nth-child(1) {
+  animation-delay: 0.1s;
+}
+.theme-card:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.theme-card:nth-child(3) {
+  animation-delay: 0.3s;
+}
+.theme-card:nth-child(4) {
+  animation-delay: 0.4s;
+}
+.theme-card:nth-child(5) {
+  animation-delay: 0.5s;
+}
+.theme-card:nth-child(6) {
+  animation-delay: 0.6s;
+}

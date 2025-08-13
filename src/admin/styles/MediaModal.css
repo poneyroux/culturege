@@ -1,0 +1,29 @@
+/* src/admin/components/MediaModal.css */
+.mm-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+.mm-body {
+  width: 90%;
+  max-width: 1000px;
+  max-height: 80vh;
+  overflow: auto;
+  background: #fff;
+  border-radius: 8px;
+  padding: 20px;
+  position: relative;
+}
+.mm-close {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  border: none;
+  background: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
