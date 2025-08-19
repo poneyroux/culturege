@@ -208,7 +208,8 @@
 .final-questions-section {
   margin: 40px 0;
   padding: 30px;
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  background: black;
+  color: white;
   border-radius: 12px;
   border-left: 4px solid var(--theme-color, #3498db);
 }

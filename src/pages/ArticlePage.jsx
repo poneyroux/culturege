@@ -312,7 +312,7 @@ export default function ArticlePage() {
             <div className="block-questions">
               {finalQuestions.map((q, i) => (
                 <p key={i} className="question-item">
-                  {i + 1}. {q.text}
+                  {q.text}
                 </p>
               ))}
             </div>
