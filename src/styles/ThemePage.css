@@ -105,6 +105,7 @@
   display: flex;
   width: 100%;
   min-height: 180px;
+  max-height: 250px;
   background: #fff;
   border: 1px solid var(--color-border);
   text-decoration: none;
@@ -159,7 +160,6 @@
   line-height: 1.45;
   overflow: hidden;
   display: -webkit-box;
-  -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
 }
 
