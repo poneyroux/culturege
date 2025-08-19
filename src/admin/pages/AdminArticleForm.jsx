@@ -174,15 +174,15 @@ export default function AdminArticleForm() {
   // Dans AdminArticleForm.jsx, ajoutez ces fonctions :
 
   const handlePptDelete = async () => {
-    if (!formData.powerpoint_url) return;
+    if (!data.powerpoint_url) return;
 
     const confirmDelete = window.confirm('Êtes-vous sûr de vouloir supprimer ce PowerPoint ?');
     if (!confirmDelete) return;
 
     try {
-      console.log('Deleting PowerPoint:', formData.powerpoint_url);
+      console.log('Deleting PowerPoint:', data.powerpoint_url);
 
-      const response = await fetch(`/api/delete-powerpoint?url=${encodeURIComponent(formData.powerpoint_url)}`, {
+      const response = await fetch(`/api/delete-powerpoint?url=${encodeURIComponent(data.powerpoint_url)}`, {
         method: 'DELETE',
       });
 
@@ -557,17 +557,17 @@ export default function AdminArticleForm() {
         <div className="form-group">
           <label>PowerPoint associé</label>
 
-          {formData.powerpoint_url ? (
+          {data.powerpoint_url ? (
             // PowerPoint existant
             <div className="powerpoint-section">
               <div className="powerpoint-current">
                 <div className="powerpoint-info">
                   <span className="powerpoint-icon">📄</span>
                   <span className="powerpoint-name">
-                    {formData.powerpoint_url.split('/').pop()}
+                    {data.powerpoint_url.split('/').pop()}
                   </span>
                   <a
-                    href={formData.powerpoint_url}
+                    href={data.powerpoint_url}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="powerpoint-link"
