@@ -118,7 +118,7 @@ export default function AdminArticleForm() {
           id: newBlockId,
           type,
           title: "",
-          "",
+          data: "",
           questions: [],
           wikiLinks: [],
         },
