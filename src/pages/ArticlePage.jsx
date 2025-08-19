@@ -12,6 +12,7 @@ export default function ArticlePage() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [error, setError] = useState(null);
   const [allThemes, setAllThemes] = useState([]);
+  const [showScrollTop, setShowScrollTop] = useState(false);
 
   useEffect(() => {
     const fetchAllThemes = async () => {
@@ -102,6 +103,22 @@ export default function ArticlePage() {
       // Fallback : ouvrir dans un nouvel onglet
       window.open(url, '_blank');
     }
+  };
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowScrollTop(window.scrollY > 300);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
   };
 
   // Correction pour fermer le menu
@@ -292,6 +309,14 @@ export default function ArticlePage() {
             </div>
           </section>
         )}
+        {showScrollTop && (
+          <button
+            className="scroll-to-top"
+            onClick={scrollToTop}
+            aria-label="Retour en haut"
+          >
+            ↑
+          </button>)}
 
         {/* ---- bouton téléchargement ppt ---- */}
         <div className="ppt-download">
@@ -313,6 +338,7 @@ export default function ArticlePage() {
 
 
       </div>
+
     </div>
   );
 }
