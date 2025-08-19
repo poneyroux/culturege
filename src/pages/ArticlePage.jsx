@@ -170,7 +170,15 @@ export default function ArticlePage() {
     // ignore l'erreur silencieusement
   }
   const blocks = content.blocks || [];
-  const finalQuestions = content.finalQuestions || [];
+  const finalQuestions = article?.final_questions
+    ? article.final_questions
+      .split('\n')
+      .filter(line => line.trim()) // Supprimer les lignes vides
+      .map((line, index) => ({
+        id: index,
+        text: line.trim()
+      }))
+    : [];
 
   return (
     <div
