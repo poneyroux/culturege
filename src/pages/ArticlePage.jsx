@@ -308,7 +308,7 @@ export default function ArticlePage() {
         {/* ---- questions finales ---- */}
         {finalQuestions.length > 0 && (
           <section className="final-questions-section">
-            <h2 className="block-final-title">QUESTIONS FINALES</h2>
+            <h2 className="block-final-title">Et pour finir...</h2>
 
             {finalQuestions.map((q, i) => (
               <p key={i} className="question-item">
