@@ -25,6 +25,7 @@ export default function AdminArticleForm() {
     theme_id: "",
     subcategory: "",
     image_url: "",
+    final_questions: "",
     powerpoint_url: "",
     status: "draft",
   });
@@ -72,6 +73,7 @@ export default function AdminArticleForm() {
         subcategory: data.subcategory ?? "",
         image_url: data.image_url ?? "",
         powerpoint_url: data.powerpoint_url ?? "",
+        final_questions: data.final_questions ?? "",
         status: data.status ?? "draft",
       });
       setContent(
@@ -608,6 +610,25 @@ export default function AdminArticleForm() {
             </div>
           </div>
         ))}
+      </section>
+      <section className="card">
+        <div className="field">
+          <label>Questions finales (optionnel)</label>
+          <textarea
+            placeholder="Ajoutez ici vos questions de synthèse, une par ligne.&#10;Exemple :&#10;1. Quelle est la date de la Révolution française ?&#10;2. Qui était Napoléon Bonaparte ?"
+            value={form.final_questions}
+            onChange={(e) => onChange("final_questions", e.target.value)}
+            rows={6}
+            style={{
+              fontFamily: 'monospace',
+              fontSize: '14px',
+              lineHeight: '1.5'
+            }}
+          />
+          <small style={{ color: '#666', fontSize: '12px', marginTop: '5px', display: 'block' }}>
+            💡 Tapez vos questions une par ligne. Elles apparaîtront à la fin de l'article comme questions de synthèse.
+          </small>
+        </div>
       </section>
 
       {/* ---- actions ---- */}
