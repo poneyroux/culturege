@@ -308,14 +308,14 @@ export default function ArticlePage() {
         {/* ---- questions finales ---- */}
         {finalQuestions.length > 0 && (
           <section className="final-questions-section">
-            <h2 className="block-title">QUESTIONS FINALES</h2>
-            <div className="block-questions">
-              {finalQuestions.map((q, i) => (
-                <p key={i} className="question-item">
-                  {q.text}
-                </p>
-              ))}
-            </div>
+            <h2 className="block-final-title">QUESTIONS FINALES</h2>
+
+            {finalQuestions.map((q, i) => (
+              <p key={i} className="question-item">
+                {q.text}
+              </p>
+            ))}
+
           </section>
         )}
         {showScrollTop && (

@@ -214,8 +214,8 @@
   border-left: 4px solid var(--theme-color, #3498db);
 }
 
-.final-questions-section .block-title {
-  color: var(--theme-color, #3498db);
+.final-questions-section .block-final-title {
+  color: white;
   margin-bottom: 20px;
   font-size: 1.4em;
   text-align: center;
