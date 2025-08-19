@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import MediaLibrary from "../components/MediaLibrary";
-import MediaModal from "../components/MediaModal";
+// import MediaLibrary from "../components/MediaLibrary";
+// import MediaModal from "../components/MediaModal";
 
 export default function AdminDashboard() {
   return (
@@ -44,10 +44,10 @@ export default function AdminDashboard() {
           </div>
         </Link>
 
-        <div style={{ padding: "20px" }}>
+        {/* <div style={{ padding: "20px" }}>
           <h1>Gestion de la médiathèque</h1>
           <MediaModal triggerLabel="Gérer la médiathèque" />{" "}
-        </div>
+        </div> */}
 
         <Link
           to="/admin/articles"

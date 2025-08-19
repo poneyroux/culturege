@@ -24,7 +24,8 @@ export default function AdminArticleForm() {
     slug: "",
     theme_id: "",
     subcategory: "",
-    image_url: "", // image principale
+    image_url: "",
+    powerpoint_url: "", // ← Nom correct de la colonne
     status: "draft",
   });
 
@@ -70,6 +71,7 @@ export default function AdminArticleForm() {
         theme_id: data.theme_id ?? "",
         subcategory: data.subcategory ?? "",
         image_url: data.image_url ?? "",
+        powerpoint_url: data.powerpoint_url ?? "",
         status: data.status ?? "draft",
       });
       setContent(
@@ -105,13 +107,15 @@ export default function AdminArticleForm() {
   };
 
   /* ---------- blocs de contenu ---------- */
-  const addBlock = (type) =>
+  const addBlock = (type) => {
+    const newBlockId = Date.now().toString(); // ← Cette ligne doit être dans la fonction
+
     setContent((p) => ({
       ...p,
       blocks: [
         ...p.blocks,
         {
-          id: Date.now().toString(),
+          id: newBlockId,
           type,
           title: "",
           data: "",
@@ -120,6 +124,19 @@ export default function AdminArticleForm() {
         },
       ],
     }));
+
+    // Scroll vers le nouveau bloc
+    setTimeout(() => {
+      const blockElement = document.getElementById(`block-${newBlockId}`);
+      if (blockElement) {
+        blockElement.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center'
+        });
+      }
+    }, 100);
+  };
+
 
   const updateBlock = (id, field, val) =>
     setContent((p) => ({
@@ -152,6 +169,42 @@ export default function AdminArticleForm() {
         .find((b) => b.id === bid)
         .wikiLinks.filter((w) => w.id !== wid)
     );
+
+  // Dans AdminArticleForm.jsx, ajoutez cette fonction :
+  const handlePptUpload = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    if (!file.name.match(/\.(ppt|pptx)$/i)) {
+      alert("Veuillez sélectionner un fichier PowerPoint (.ppt ou .pptx)");
+      return;
+    }
+
+    try {
+      // ✅ CORRECTION : Utiliser FormData comme pour les images
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const response = await fetch(`/api/upload-powerpoint?filename=${encodeURIComponent(file.name)}`, {
+        method: 'POST',
+        body: formData, // FormData au lieu de file
+      });
+
+      const responseText = await response.text();
+
+      if (!response.ok) {
+        throw new Error(`Upload failed: ${response.statusText} - ${responseText}`);
+      }
+
+      const data = JSON.parse(responseText);
+
+      onChange("powerpoint_url", data.url);
+      alert("PowerPoint uploadé avec succès !");
+    } catch (error) {
+      console.error('Erreur upload PowerPoint:', error);
+      alert(`Erreur: ${error.message}`);
+    }
+  };
 
   /* -------------- save ------------------ */
   const handleSave = async (status) => {
@@ -260,17 +313,19 @@ export default function AdminArticleForm() {
         </div>
 
         {/* ---- image principale via médiathèque ---- */}
+
         <div className="field">
           <label>Image principale</label>
           <MediaPicker
             value={form.image_url}
             onChange={(url) => onChange("image_url", url)}
-            triggerLabel={form.image_url ? "Changer" : "Choisir / Uploader"}
+            triggerLabel={form.image_url ? "Changer l'image" : "Choisir / Uploader une image"}
           />
           {form.image_url && (
-            <img src={form.image_url} alt="" className="thumb" />
+            <img src={form.image_url} alt="" className="thumb" style={{ marginTop: '10px', maxWidth: '200px' }} />
           )}
         </div>
+
       </section>
 
       {/* ---- blocs ---- */}
@@ -306,7 +361,7 @@ export default function AdminArticleForm() {
         {content.blocks.length === 0 && <p className="empty">Aucun bloc</p>}
 
         {content.blocks.map((b, i) => (
-          <div key={b.id} className="block">
+          <div key={b.id} id={`block-${b.id}`} className="block"> {/* ← ID ajouté */}
             <div className="block__title">
               <strong>
                 Bloc {i + 1} – {b.type}
@@ -337,23 +392,18 @@ export default function AdminArticleForm() {
             )}
 
             {/* ---- Image ---- */}
+            {/* ---- Image ---- */}
             {b.type === "image" && (
               <div className="field">
-                <input
-                  placeholder="https://…"
-                  value={b.data}
-                  onChange={(e) => updateBlock(b.id, "data", e.target.value)}
-                />
-
-                {/* bouton / modale Médiathèque */}
                 <MediaPicker
-                  triggerLabel="Médiathèque"
                   value={b.data}
                   onChange={(url) => updateBlock(b.id, "data", url)}
+                  triggerLabel="Choisir depuis la médiathèque"
                 />
                 {b.data && <img src={b.data} alt="" className="thumb" />}
               </div>
             )}
+
 
             {/* ---- Vidéo ---- */}
             {b.type === "video" && (
@@ -468,6 +518,39 @@ export default function AdminArticleForm() {
           </div>
         ))}
       </section>
+      {/* ---- PowerPoint (UPLOAD vers Vercel) ---- */}
+      <section className="card">
+        <h3>Présentation PowerPoint</h3>
+        <div className="field">
+          <label>Fichier PowerPoint associé</label>
+          <input
+            type="file"
+            accept=".ppt,.pptx"
+            onChange={handlePptUpload}
+            style={{ marginBottom: '10px' }}
+          />
+          {form.powerpoint_url && (
+            <div style={{
+              marginTop: '10px',
+              padding: '15px',
+              background: '#f0f9ff',
+              borderRadius: '6px',
+              border: '1px solid #0ea5e9'
+            }}>
+              ✅ <strong>PowerPoint hébergé :</strong><br />
+              <a
+                href={form.powerpoint_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ color: '#0ea5e9', textDecoration: 'none' }}
+              >
+                {form.powerpoint_url.split('/').pop()}
+              </a>
+            </div>
+          )}
+        </div>
+      </section>
+
 
       {/* ---- actions ---- */}
       <div className="actions">

@@ -1,6 +1,6 @@
 import React from "react";
 import { Outlet, Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../pages/AuthContext";
+import { useAuth } from "../../hooks/useAuth";
 
 export default function AdminLayout() {
   const { logout } = useAuth();

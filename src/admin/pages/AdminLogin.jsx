@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Navigate } from "react-router-dom";
-import { useAuth } from "../pages/AuthContext";
+import { useAuth } from "../../hooks/useAuth"; // ← Chemin corrigé
 import "../styles/AdminStyles.css";
 
 export default function AdminLogin() {
@@ -9,6 +9,7 @@ export default function AdminLogin() {
   const [loading, setLoading] = useState(false);
   const { login, isAuthenticated } = useAuth();
 
+  // ✅ Redirection conditionnelle
   if (isAuthenticated) {
     return <Navigate to="/admin" replace />;
   }
@@ -18,14 +19,18 @@ export default function AdminLogin() {
     setLoading(true);
     setError("");
 
-    const success = login(password);
+    try {
+      const success = login(password);
 
-    if (!success) {
-      setError("Mot de passe incorrect");
-      setPassword("");
+      if (!success) {
+        setError("Mot de passe incorrect");
+        setPassword("");
+      }
+    } catch (err) {
+      setError("Une erreur est survenue");
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
   return (

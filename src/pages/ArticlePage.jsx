@@ -3,11 +3,9 @@ import { useParams, Link } from "react-router-dom";
 import { supabase } from "../supabaseClient";
 import Header from "../components/Header";
 import "../styles/ArticlePage.css";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function ArticlePage() {
-  const { themeSlug } = useParams();
-  const { articleSlug } = useParams();
+  const { themeSlug, articleSlug } = useParams();
   const [article, setArticle] = useState(null);
   const [theme, setTheme] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -16,17 +14,13 @@ export default function ArticlePage() {
   const [allThemes, setAllThemes] = useState([]);
 
   useEffect(() => {
-    // récupérer TOUTES les rubriques une fois pour toutes
     const fetchAllThemes = async () => {
       const { data, error } = await supabase
         .from("themes")
         .select("id, name, slug, emoji, color")
-        .order("name"); // tri optionnel
-
-      if (error) console.error(error);
-      else setAllThemes(data);
+        .order("name");
+      if (!error) setAllThemes(data);
     };
-
     fetchAllThemes();
   }, []);
 
@@ -36,58 +30,44 @@ export default function ArticlePage() {
 
   const loadThemeData = async () => {
     try {
-      // Charger le thème
-      const { data: themeData, error: themeError } = await supabase
+      const { themeData, error: themeError } = await supabase
         .from("themes")
         .select("*")
         .eq("slug", themeSlug)
         .single();
-
-      console.log(themeData);
-
-      if (themeError) throw themeError;
-      if (!themeData) {
-        setLoading(false);
-        return;
-      }
-
-      setTheme(themeData);
+      if (themeData) setTheme(themeData);
     } catch (error) {
-      console.error("Erreur chargement thème:", error);
+      // erreur silencieuse
     }
   };
 
   useEffect(() => {
     if (!articleSlug) return;
-
     const fetchArticle = async () => {
       try {
         setLoading(true);
         setError(null);
-
-        const articleResponse = await supabase
+        const { data, error } = await supabase
           .from("articles")
           .select("*")
           .eq("slug", articleSlug)
           .eq("status", "published");
-
-        if (articleResponse.error) throw articleResponse.error;
-        if (!articleResponse.data || articleResponse.data.length === 0) {
+        if (error) throw error;
+        if (!data || data.length === 0) {
           setError("Article non trouvé");
+          setArticle(null);
+          setLoading(false);
           return;
         }
-
-        const foundArticle = articleResponse.data[0];
-        setArticle(foundArticle);
-
-        if (foundArticle.theme_id) {
-          const themeResponse = await supabase
+        setArticle(data[0]); // Contient .powerpoint_url
+        // Charge le thème si besoin
+        if (data.theme_id) {
+          const { data: th } = await supabase
             .from("themes")
             .select("*")
-            .eq("id", foundArticle.theme_id);
-
-          if (themeResponse.data && themeResponse.data.length > 0) {
-            setTheme(themeResponse.data[0]);
+            .eq("id", data.theme_id);
+          if (th && th.length > 0) {
+            setTheme(th);
           }
         }
       } catch (err) {
@@ -96,9 +76,33 @@ export default function ArticlePage() {
         setLoading(false);
       }
     };
-
     fetchArticle();
   }, [articleSlug]);
+
+
+  const handleDownload = async (url) => {
+    try {
+      const response = await fetch(url);
+      const blob = await response.blob();
+
+      // Extraire le nom du fichier de l'URL
+      const fileName = url.split('/').pop() || 'presentation.pptx';
+
+      // Créer un lien temporaire pour télécharger
+      const downloadUrl = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = downloadUrl;
+      link.download = fileName;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(downloadUrl);
+    } catch (error) {
+      console.error('Erreur de téléchargement:', error);
+      // Fallback : ouvrir dans un nouvel onglet
+      window.open(url, '_blank');
+    }
+  };
 
   // Correction pour fermer le menu
   const toggleMenu = () => {
@@ -111,8 +115,8 @@ export default function ArticlePage() {
         <Header
           menuOpen={menuOpen}
           onToggleMenu={toggleMenu}
-          showThemesList={true} // ou false si tu ne veux pas la liste
-          themes={allThemes} // ou le tableau de thèmes si tu l’as
+          showThemesList={true}
+          themes={allThemes}
         />
         <div className="loading-state">
           <p>Chargement de l'article...</p>
@@ -135,25 +139,20 @@ export default function ArticlePage() {
     );
   }
 
-  // Parse sécurisé du contenu - CORRIGÉ
+  // Récupérer et parser le contenu du champ content
   let content = { blocks: [], finalQuestions: [] };
   try {
     if (article.content) {
-      // Si c'est déjà un objet, l'utiliser directement
-      // Si c'est une string, la parser
       content =
         typeof article.content === "string"
           ? JSON.parse(article.content)
           : article.content;
     }
-    console.log(content);
   } catch (e) {
-    console.error("Erreur parsing JSON:", e);
+    // ignore l'erreur silencieusement
   }
-
   const blocks = content.blocks || [];
   const finalQuestions = content.finalQuestions || [];
-  console.log(blocks);
 
   return (
     <div
@@ -164,14 +163,14 @@ export default function ArticlePage() {
         menuOpen={menuOpen}
         onToggleMenu={toggleMenu}
         currentTheme={theme}
-        showThemesList={true} // ou false si tu ne veux pas la liste
-        themes={allThemes} // ou le tableau de thèmes si tu l’as
+        showThemesList={true}
+        themes={allThemes}
       />
 
+
       <div
-        className={`article-page-content article-container ${
-          menuOpen ? "hidden" : ""
-        }`}
+        className={`article-page-content article-container ${menuOpen ? "hidden" : ""
+          }`}
       >
         {/* ---- bouton retour ---- */}
         <div className="article-nav">
@@ -181,14 +180,10 @@ export default function ArticlePage() {
             </Link>
           )}
         </div>
-
-        {/* ---- titre + résumé ---- */}
         <h1 className="article-title">{article.title}</h1>
         {article.summary && (
           <p className="article-summary">{article.summary}</p>
         )}
-
-        {/* ---- image principale ---- */}
         {article.image_url && (
           <figure className="article-main-image">
             <img src={article.image_url} alt={article.title} />
@@ -199,9 +194,7 @@ export default function ArticlePage() {
         {blocks.map((block, index) => (
           <React.Fragment key={index}>
             <section className="content-block">
-              {/* titre du bloc */}
               {block.title && <h2 className="block-title">{block.title}</h2>}
-              {/* contenu principal */}
               {block.type === "text" && (
                 <div
                   className="block-text"
@@ -246,8 +239,6 @@ export default function ArticlePage() {
                 <div className="block-questions">
                   <header>
                     <span>QUESTIONS</span>
-
-                    {/* bouton compact – copier dans le presse-papier */}
                     <button
                       className="copy-btn"
                       title="Copier les questions"
@@ -262,7 +253,6 @@ export default function ArticlePage() {
                       📋
                     </button>
                   </header>
-
                   {block.questions.map((q, qi) => (
                     <p key={qi} className="question-item">
                       {qi + 1}. {q.text}
@@ -270,26 +260,21 @@ export default function ArticlePage() {
                   ))}
                 </div>
               )}
-              {/* lien Wikipédia (placeholder) */}
               {block.wikiLinks?.length > 0 && (
                 <div className="wiki-link">
                   {block.wikiLinks.map((l) => (
-                    <>
-                      <a
-                        key={l.id}
-                        href={l.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        {l.label || "Voir sur Wikipédia"} →
-                      </a>
-                    </>
+                    <a
+                      key={l.id}
+                      href={l.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {l.label || "Voir sur Wikipédia"} →
+                    </a>
                   ))}
                 </div>
               )}
             </section>
-
-            {/* séparateur entre blocs */}
             {index !== blocks.length - 1 && <hr className="block-separator" />}
           </React.Fragment>
         ))}
@@ -310,10 +295,23 @@ export default function ArticlePage() {
 
         {/* ---- bouton téléchargement ppt ---- */}
         <div className="ppt-download">
-          <button className="ppt-btn">
-            Télécharger la présentation associée
-          </button>
+
+          {article.powerpoint_url ? (
+            <button
+              className="ppt-btn"
+              onClick={() => {
+                console.log("Clic sur téléchargement:", article.powerpoint_url);
+                window.open(article.powerpoint_url, '_blank');
+              }}
+            >
+              Télécharger la présentation associée
+            </button>
+          ) : (
+            <p style={{ color: 'red' }}>Aucune présentation disponible</p>
+          )}
         </div>
+
+
       </div>
     </div>
   );

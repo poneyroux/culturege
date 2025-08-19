@@ -14,15 +14,11 @@ export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  // Le mot de passe admin (vous pouvez le changer)
   const ADMIN_PASSWORD = "admin2025";
 
   useEffect(() => {
-    // Vérifier si l'utilisateur est déjà connecté
     const adminAuth = localStorage.getItem("adminAuth");
-    if (adminAuth === "authenticated") {
-      setIsAuthenticated(true);
-    }
+    setIsAuthenticated(adminAuth === "authenticated");
     setLoading(false);
   }, []);
 
@@ -40,12 +36,17 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem("adminAuth");
   };
 
-  const value = {
+  // ✅ Utilisation d'une variable au lieu de JSX inline
+  const contextValue = {
     isAuthenticated,
     login,
     logout,
     loading,
   };
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={contextValue}>
+      {children}
+    </AuthContext.Provider>
+  );
 };
