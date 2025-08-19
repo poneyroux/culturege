@@ -31,7 +31,7 @@ export default async function handler(req, res) {
         }
 
         // ✅ Validation des types PowerPoint
-        if (!filename.match(/\.(ppt|pptx)$/i)) {
+        if (!filename.match(/\.(ppt|pptx|pdf)$/i)) {
             return res.status(400).json({ error: 'Invalid PowerPoint type' });
         }
 

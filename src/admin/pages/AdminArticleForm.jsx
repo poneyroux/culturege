@@ -171,40 +171,73 @@ export default function AdminArticleForm() {
     );
 
   // Dans AdminArticleForm.jsx, ajoutez cette fonction :
-  const handlePptUpload = async (event) => {
-    const file = event.target.files[0];
-    if (!file) return;
+  // Dans AdminArticleForm.jsx, ajoutez ces fonctions :
 
-    if (!file.name.match(/\.(ppt|pptx)$/i)) {
-      alert("Veuillez sélectionner un fichier PowerPoint (.ppt ou .pptx)");
-      return;
-    }
+  const handlePptDelete = async () => {
+    if (!formData.powerpoint_url) return;
+
+    const confirmDelete = window.confirm('Êtes-vous sûr de vouloir supprimer ce PowerPoint ?');
+    if (!confirmDelete) return;
 
     try {
-      // ✅ CORRECTION : Utiliser FormData comme pour les images
-      const formData = new FormData();
-      formData.append('file', file);
+      console.log('Deleting PowerPoint:', formData.powerpoint_url);
 
-      const response = await fetch(`/api/upload-powerpoint?filename=${encodeURIComponent(file.name)}`, {
-        method: 'POST',
-        body: formData, // FormData au lieu de file
+      const response = await fetch(`/api/delete-powerpoint?url=${encodeURIComponent(formData.powerpoint_url)}`, {
+        method: 'DELETE',
       });
 
       const responseText = await response.text();
 
       if (!response.ok) {
-        throw new Error(`Upload failed: ${response.statusText} - ${responseText}`);
+        throw new Error(`Delete failed: ${response.statusText} - ${responseText}`);
       }
 
-      const data = JSON.parse(responseText);
+      // Supprimer l'URL du formulaire
+      onChange("powerpoint_url", "");
+      alert("PowerPoint supprimé avec succès !");
 
-      onChange("powerpoint_url", data.url);
-      alert("PowerPoint uploadé avec succès !");
     } catch (error) {
-      console.error('Erreur upload PowerPoint:', error);
+      console.error('Erreur suppression PowerPoint:', error);
       alert(`Erreur: ${error.message}`);
     }
   };
+
+  const handlePptUpload = async (event) => {
+    const file = event.target.files;
+    if (!file) return;
+
+    try {
+      console.log('File size:', (file.size / 1024 / 1024).toFixed(2), 'MB');
+
+      // ✅ Upload direct vers Vercel Blob (pas de limite 4.5MB)
+      const response = await fetch('/api/get-upload-token', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ filename: file.name }),
+      });
+
+      const { url, token } = await response.json();
+
+      // Upload direct avec fetch vers l'URL signée
+      const uploadResponse = await fetch(url, {
+        method: 'PUT',
+        body: file,
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      if (uploadResponse.ok) {
+        const blobUrl = uploadResponse.url.split('?')[0]; // Nettoyer l'URL
+        onChange("powerpoint_url", blobUrl);
+        alert("PowerPoint uploadé avec succès !");
+      }
+    } catch (error) {
+      console.error('Erreur upload:', error);
+      alert(`Erreur: ${error.message}`);
+    }
+  };
+
 
   /* -------------- save ------------------ */
   const handleSave = async (status) => {
@@ -520,35 +553,64 @@ export default function AdminArticleForm() {
       </section>
       {/* ---- PowerPoint (UPLOAD vers Vercel) ---- */}
       <section className="card">
-        <h3>Présentation PowerPoint</h3>
-        <div className="field">
-          <label>Fichier PowerPoint associé</label>
-          <input
-            type="file"
-            accept=".ppt,.pptx"
-            onChange={handlePptUpload}
-            style={{ marginBottom: '10px' }}
-          />
-          {form.powerpoint_url && (
-            <div style={{
-              marginTop: '10px',
-              padding: '15px',
-              background: '#f0f9ff',
-              borderRadius: '6px',
-              border: '1px solid #0ea5e9'
-            }}>
-              ✅ <strong>PowerPoint hébergé :</strong><br />
-              <a
-                href={form.powerpoint_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{ color: '#0ea5e9', textDecoration: 'none' }}
-              >
-                {form.powerpoint_url.split('/').pop()}
-              </a>
+        {/* Section PowerPoint améliorée */}
+        <div className="form-group">
+          <label>PowerPoint associé</label>
+
+          {formData.powerpoint_url ? (
+            // PowerPoint existant
+            <div className="powerpoint-section">
+              <div className="powerpoint-current">
+                <div className="powerpoint-info">
+                  <span className="powerpoint-icon">📄</span>
+                  <span className="powerpoint-name">
+                    {formData.powerpoint_url.split('/').pop()}
+                  </span>
+                  <a
+                    href={formData.powerpoint_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="powerpoint-link"
+                  >
+                    Ouvrir
+                  </a>
+                </div>
+                <div className="powerpoint-actions">
+                  <button
+                    type="button"
+                    onClick={handlePptDelete}
+                    className="btn-delete"
+                  >
+                    🗑️ Supprimer
+                  </button>
+                  <label className="btn-change">
+                    🔄 Changer
+                    <input
+                      type="file"
+                      accept=".ppt,.pptx, .pdf"
+                      onChange={handlePptUpload}
+                      style={{ display: 'none' }}
+                    />
+                  </label>
+                </div>
+              </div>
+            </div>
+          ) : (
+            // Aucun PowerPoint
+            <div className="powerpoint-upload">
+              <label className="btn-upload">
+                📤 Ajouter un PowerPoint
+                <input
+                  type="file"
+                  accept=".ppt,.pptx, .pdf"
+                  onChange={handlePptUpload}
+                  style={{ display: 'none' }}
+                />
+              </label>
             </div>
           )}
         </div>
+
       </section>
 
 

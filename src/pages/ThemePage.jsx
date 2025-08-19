@@ -134,8 +134,9 @@ export default function ThemePage() {
       />
       {/* Contenu principal */}
       <div
-        className={`theme-page-content theme-container ${menuOpen ? "hidden" : ""
-          }`}
+        className={`theme-page-content theme-container ${
+          menuOpen ? "hidden" : ""
+        }`}
       >
         {/* En-tête du thème */}
         <div className="theme-header">
@@ -148,8 +149,9 @@ export default function ThemePage() {
         {uniqueCategories.length > 0 && (
           <div className="category-filters">
             <button
-              className={`filter-button ${selectedCategory === "" ? "active" : ""
-                }`}
+              className={`filter-button ${
+                selectedCategory === "" ? "active" : ""
+              }`}
               onClick={() => setSelectedCategory("")}
             >
               Tout afficher ({articles.length})
@@ -157,8 +159,9 @@ export default function ThemePage() {
             {uniqueCategories.map((category) => (
               <button
                 key={category}
-                className={`filter-button ${selectedCategory === category ? "active" : ""
-                  }`}
+                className={`filter-button ${
+                  selectedCategory === category ? "active" : ""
+                }`}
                 onClick={() => setSelectedCategory(category)}
               >
                 {category} (
@@ -185,7 +188,13 @@ export default function ThemePage() {
                 to={`/article/${article.slug}`}
                 className="article-card"
               >
-
+                {article.image_url && (
+                  <img
+                    src={article.image_url}
+                    alt={article.title}
+                    className="article-image"
+                  />
+                )}
 
                 <div className="article-content">
                   <h3 className="article-title-theme">{article.title}</h3>
