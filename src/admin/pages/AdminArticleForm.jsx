@@ -25,7 +25,7 @@ export default function AdminArticleForm() {
     theme_id: "",
     subcategory: "",
     image_url: "",
-    powerpoint_url: "", // ← Nom correct de la colonne
+    powerpoint_url: "",
     status: "draft",
   });
 
@@ -118,7 +118,7 @@ export default function AdminArticleForm() {
           id: newBlockId,
           type,
           title: "",
-          data: "",
+          "",
           questions: [],
           wikiLinks: [],
         },
@@ -169,15 +169,15 @@ export default function AdminArticleForm() {
         .wikiLinks.filter((w) => w.id !== wid)
     );
 
-  // ✅ FONCTIONS POWERPOINT CORRIGÉES
+  // Fonctions PowerPoint/PDF
   const handlePptDelete = async () => {
-    if (!form.powerpoint_url) return; // ✅ form au lieu de data
+    if (!form.powerpoint_url) return;
 
-    const confirmDelete = window.confirm('Êtes-vous sûr de vouloir supprimer ce PowerPoint ?');
+    const confirmDelete = window.confirm('Êtes-vous sûr de vouloir supprimer ce document ?');
     if (!confirmDelete) return;
 
     try {
-      console.log('Deleting PowerPoint:', form.powerpoint_url);
+      console.log('Deleting document:', form.powerpoint_url);
 
       const response = await fetch(`/api/delete-powerpoint?url=${encodeURIComponent(form.powerpoint_url)}`, {
         method: 'DELETE',
@@ -189,29 +189,28 @@ export default function AdminArticleForm() {
         throw new Error(`Delete failed: ${response.statusText} - ${responseText}`);
       }
 
-      // Supprimer l'URL du formulaire
       onChange("powerpoint_url", "");
-      alert("PowerPoint supprimé avec succès !");
+      alert("Document supprimé avec succès !");
 
     } catch (error) {
-      console.error('Erreur suppression PowerPoint:', error);
+      console.error('Erreur suppression document:', error);
       alert(`Erreur: ${error.message}`);
     }
   };
 
   const handlePptUpload = async (event) => {
-    const file = event.target.files[0]; // ✅ [0] ajouté
+    const file = event.target.files[0];
     if (!file) return;
 
-    if (!file.name.match(/\.(ppt|pptx|pdf)$/i)) { // ✅ PDF ajouté
+    if (!file.name.match(/\.(ppt|pptx|pdf)$/i)) {
       alert("Veuillez sélectionner un fichier PowerPoint (.ppt, .pptx) ou PDF (.pdf)");
       return;
     }
 
     try {
-      // Si il y a déjà un PowerPoint, le supprimer d'abord
-      if (form.powerpoint_url) { // ✅ form au lieu de data
-        console.log('Removing old PowerPoint before upload...');
+      // Si il y a déjà un document, le supprimer d'abord
+      if (form.powerpoint_url) {
+        console.log('Removing old document before upload...');
         await fetch(`/api/delete-powerpoint?url=${encodeURIComponent(form.powerpoint_url)}`, {
           method: 'DELETE',
         });
@@ -241,7 +240,7 @@ export default function AdminArticleForm() {
         event.target.value = '';
       }
     } catch (error) {
-      console.error('Erreur upload PowerPoint:', error);
+      console.error('Erreur upload document:', error);
       alert(`Erreur: ${error.message}`);
     }
   };
@@ -362,6 +361,66 @@ export default function AdminArticleForm() {
           />
           {form.image_url && (
             <img src={form.image_url} alt="" className="thumb" style={{ marginTop: '10px', maxWidth: '200px' }} />
+          )}
+        </div>
+      </section>
+
+      {/* ---- PowerPoint/PDF ---- */}
+      <section className="card">
+        <div className="field">
+          <label>Document associé (PowerPoint/PDF)</label>
+
+          {form.powerpoint_url ? (
+            // Document existant
+            <div className="powerpoint-section">
+              <div className="powerpoint-current">
+                <div className="powerpoint-info">
+                  <span className="powerpoint-icon">📄</span>
+                  <span className="powerpoint-name">
+                    {form.powerpoint_url.split('/').pop()}
+                  </span>
+                  <a
+                    href={form.powerpoint_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="powerpoint-link"
+                  >
+                    Ouvrir
+                  </a>
+                </div>
+                <div className="powerpoint-actions">
+                  <button
+                    type="button"
+                    onClick={handlePptDelete}
+                    className="btn-delete"
+                  >
+                    🗑️ Supprimer
+                  </button>
+                  <label className="btn-change">
+                    🔄 Changer
+                    <input
+                      type="file"
+                      accept=".ppt,.pptx,.pdf"
+                      onChange={handlePptUpload}
+                      style={{ display: 'none' }}
+                    />
+                  </label>
+                </div>
+              </div>
+            </div>
+          ) : (
+            // Aucun document
+            <div className="powerpoint-upload">
+              <label className="btn-upload">
+                📤 Ajouter un document (PowerPoint/PDF)
+                <input
+                  type="file"
+                  accept=".ppt,.pptx,.pdf"
+                  onChange={handlePptUpload}
+                  style={{ display: 'none' }}
+                />
+              </label>
+            </div>
           )}
         </div>
       </section>
@@ -549,66 +608,6 @@ export default function AdminArticleForm() {
             </div>
           </div>
         ))}
-      </section>
-
-      {/* ---- PowerPoint/PDF ---- */}
-      <section className="card">
-        <div className="field">
-          <label>Document associé (PowerPoint/PDF)</label>
-
-          {form.powerpoint_url ? ( // ✅ form au lieu de data
-            // Document existant
-            <div className="powerpoint-section">
-              <div className="powerpoint-current">
-                <div className="powerpoint-info">
-                  <span className="powerpoint-icon">📄</span>
-                  <span className="powerpoint-name">
-                    {form.powerpoint_url.split('/').pop()}
-                  </span>
-                  <a
-                    href={form.powerpoint_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="powerpoint-link"
-                  >
-                    Ouvrir
-                  </a>
-                </div>
-                <div className="powerpoint-actions">
-                  <button
-                    type="button"
-                    onClick={handlePptDelete}
-                    className="btn-delete"
-                  >
-                    🗑️ Supprimer
-                  </button>
-                  <label className="btn-change">
-                    🔄 Changer
-                    <input
-                      type="file"
-                      accept=".ppt,.pptx,.pdf" // ✅ PDF ajouté
-                      onChange={handlePptUpload}
-                      style={{ display: 'none' }}
-                    />
-                  </label>
-                </div>
-              </div>
-            </div>
-          ) : (
-            // Aucun document
-            <div className="powerpoint-upload">
-              <label className="btn-upload">
-                📤 Ajouter un document (PowerPoint/PDF)
-                <input
-                  type="file"
-                  accept=".ppt,.pptx,.pdf" // ✅ PDF ajouté
-                  onChange={handlePptUpload}
-                  style={{ display: 'none' }}
-                />
-              </label>
-            </div>
-          )}
-        </div>
       </section>
 
       {/* ---- actions ---- */}
