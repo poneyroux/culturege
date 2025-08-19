@@ -231,7 +231,8 @@
   align-items: start;
   font-weight: 700;
   font-size: 1.3em;
-  margin-bottom: var(--spacing-xs);
+  margin-bottom: var(--spacing-md);
+  text-transform: uppercase;
 }
 
 
