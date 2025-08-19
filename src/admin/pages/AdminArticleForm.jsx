@@ -108,7 +108,7 @@ export default function AdminArticleForm() {
 
   /* ---------- blocs de contenu ---------- */
   const addBlock = (type) => {
-    const newBlockId = Date.now().toString(); // ← Cette ligne doit être dans la fonction
+    const newBlockId = Date.now().toString();
 
     setContent((p) => ({
       ...p,
@@ -136,7 +136,6 @@ export default function AdminArticleForm() {
       }
     }, 100);
   };
-
 
   const updateBlock = (id, field, val) =>
     setContent((p) => ({
@@ -170,19 +169,17 @@ export default function AdminArticleForm() {
         .wikiLinks.filter((w) => w.id !== wid)
     );
 
-  // Dans AdminArticleForm.jsx, ajoutez cette fonction :
-  // Dans AdminArticleForm.jsx, ajoutez ces fonctions :
-
+  // ✅ FONCTIONS POWERPOINT CORRIGÉES
   const handlePptDelete = async () => {
-    if (!data.powerpoint_url) return;
+    if (!form.powerpoint_url) return; // ✅ form au lieu de data
 
     const confirmDelete = window.confirm('Êtes-vous sûr de vouloir supprimer ce PowerPoint ?');
     if (!confirmDelete) return;
 
     try {
-      console.log('Deleting PowerPoint:', data.powerpoint_url);
+      console.log('Deleting PowerPoint:', form.powerpoint_url);
 
-      const response = await fetch(`/api/delete-powerpoint?url=${encodeURIComponent(data.powerpoint_url)}`, {
+      const response = await fetch(`/api/delete-powerpoint?url=${encodeURIComponent(form.powerpoint_url)}`, {
         method: 'DELETE',
       });
 
@@ -203,41 +200,51 @@ export default function AdminArticleForm() {
   };
 
   const handlePptUpload = async (event) => {
-    const file = event.target.files;
+    const file = event.target.files[0]; // ✅ [0] ajouté
     if (!file) return;
 
+    if (!file.name.match(/\.(ppt|pptx|pdf)$/i)) { // ✅ PDF ajouté
+      alert("Veuillez sélectionner un fichier PowerPoint (.ppt, .pptx) ou PDF (.pdf)");
+      return;
+    }
+
     try {
-      console.log('File size:', (file.size / 1024 / 1024).toFixed(2), 'MB');
+      // Si il y a déjà un PowerPoint, le supprimer d'abord
+      if (form.powerpoint_url) { // ✅ form au lieu de data
+        console.log('Removing old PowerPoint before upload...');
+        await fetch(`/api/delete-powerpoint?url=${encodeURIComponent(form.powerpoint_url)}`, {
+          method: 'DELETE',
+        });
+      }
 
-      // ✅ Upload direct vers Vercel Blob (pas de limite 4.5MB)
-      const response = await fetch('/api/get-upload-token', {
+      const formDataUpload = new FormData();
+      formDataUpload.append('file', file);
+
+      const response = await fetch(`/api/upload-powerpoint?filename=${encodeURIComponent(file.name)}`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ filename: file.name }),
+        body: formDataUpload,
       });
 
-      const { url, token } = await response.json();
+      const responseText = await response.text();
 
-      // Upload direct avec fetch vers l'URL signée
-      const uploadResponse = await fetch(url, {
-        method: 'PUT',
-        body: file,
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      });
+      if (!response.ok) {
+        throw new Error(`Upload failed: ${response.statusText} - ${responseText}`);
+      }
 
-      if (uploadResponse.ok) {
-        const blobUrl = uploadResponse.url.split('?')[0]; // Nettoyer l'URL
-        onChange("powerpoint_url", blobUrl);
-        alert("PowerPoint uploadé avec succès !");
+      const data = JSON.parse(responseText);
+
+      onChange("powerpoint_url", data.url);
+      alert("Document uploadé avec succès !");
+
+      // Reset l'input file
+      if (event.target) {
+        event.target.value = '';
       }
     } catch (error) {
-      console.error('Erreur upload:', error);
+      console.error('Erreur upload PowerPoint:', error);
       alert(`Erreur: ${error.message}`);
     }
   };
-
 
   /* -------------- save ------------------ */
   const handleSave = async (status) => {
@@ -277,7 +284,7 @@ export default function AdminArticleForm() {
     <div className="page">
       {/* ---- header ---- */}
       <header className="page__header">
-        <h1>{isEdit ? "Modifier l’article" : "Nouvel article"}</h1>
+        <h1>{isEdit ? "Modifier l'article" : "Nouvel article"}</h1>
         <Link to="/admin/articles" className="btn btn--grey">
           ← Retour
         </Link>
@@ -346,7 +353,6 @@ export default function AdminArticleForm() {
         </div>
 
         {/* ---- image principale via médiathèque ---- */}
-
         <div className="field">
           <label>Image principale</label>
           <MediaPicker
@@ -358,7 +364,6 @@ export default function AdminArticleForm() {
             <img src={form.image_url} alt="" className="thumb" style={{ marginTop: '10px', maxWidth: '200px' }} />
           )}
         </div>
-
       </section>
 
       {/* ---- blocs ---- */}
@@ -367,25 +372,21 @@ export default function AdminArticleForm() {
           <h3>Contenu</h3>
           <div className="btn-group">
             <button className="btn btn--green" onClick={() => addBlock("text")}>
-              {" "}
               + Texte
             </button>
             <button className="btn btn--blue" onClick={() => addBlock("image")}>
-              {" "}
               + Image
             </button>
             <button
               className="btn btn--purple"
               onClick={() => addBlock("video")}
             >
-              {" "}
               + Vidéo
             </button>
             <button
               className="btn btn--orange"
               onClick={() => addBlock("embed")}
             >
-              {" "}
               + Embed
             </button>
           </div>
@@ -394,7 +395,7 @@ export default function AdminArticleForm() {
         {content.blocks.length === 0 && <p className="empty">Aucun bloc</p>}
 
         {content.blocks.map((b, i) => (
-          <div key={b.id} id={`block-${b.id}`} className="block"> {/* ← ID ajouté */}
+          <div key={b.id} id={`block-${b.id}`} className="block">
             <div className="block__title">
               <strong>
                 Bloc {i + 1} – {b.type}
@@ -425,7 +426,6 @@ export default function AdminArticleForm() {
             )}
 
             {/* ---- Image ---- */}
-            {/* ---- Image ---- */}
             {b.type === "image" && (
               <div className="field">
                 <MediaPicker
@@ -436,7 +436,6 @@ export default function AdminArticleForm() {
                 {b.data && <img src={b.data} alt="" className="thumb" />}
               </div>
             )}
-
 
             {/* ---- Vidéo ---- */}
             {b.type === "video" && (
@@ -551,23 +550,23 @@ export default function AdminArticleForm() {
           </div>
         ))}
       </section>
-      {/* ---- PowerPoint (UPLOAD vers Vercel) ---- */}
-      <section className="card">
-        {/* Section PowerPoint améliorée */}
-        <div className="form-group">
-          <label>PowerPoint associé</label>
 
-          {data.powerpoint_url ? (
-            // PowerPoint existant
+      {/* ---- PowerPoint/PDF ---- */}
+      <section className="card">
+        <div className="field">
+          <label>Document associé (PowerPoint/PDF)</label>
+
+          {form.powerpoint_url ? ( // ✅ form au lieu de data
+            // Document existant
             <div className="powerpoint-section">
               <div className="powerpoint-current">
                 <div className="powerpoint-info">
                   <span className="powerpoint-icon">📄</span>
                   <span className="powerpoint-name">
-                    {data.powerpoint_url.split('/').pop()}
+                    {form.powerpoint_url.split('/').pop()}
                   </span>
                   <a
-                    href={data.powerpoint_url}
+                    href={form.powerpoint_url}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="powerpoint-link"
@@ -587,7 +586,7 @@ export default function AdminArticleForm() {
                     🔄 Changer
                     <input
                       type="file"
-                      accept=".ppt,.pptx, .pdf"
+                      accept=".ppt,.pptx,.pdf" // ✅ PDF ajouté
                       onChange={handlePptUpload}
                       style={{ display: 'none' }}
                     />
@@ -596,13 +595,13 @@ export default function AdminArticleForm() {
               </div>
             </div>
           ) : (
-            // Aucun PowerPoint
+            // Aucun document
             <div className="powerpoint-upload">
               <label className="btn-upload">
-                📤 Ajouter un PowerPoint
+                📤 Ajouter un document (PowerPoint/PDF)
                 <input
                   type="file"
-                  accept=".ppt,.pptx, .pdf"
+                  accept=".ppt,.pptx,.pdf" // ✅ PDF ajouté
                   onChange={handlePptUpload}
                   style={{ display: 'none' }}
                 />
@@ -610,9 +609,7 @@ export default function AdminArticleForm() {
             </div>
           )}
         </div>
-
       </section>
-
 
       {/* ---- actions ---- */}
       <div className="actions">
