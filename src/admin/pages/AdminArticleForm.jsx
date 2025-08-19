@@ -278,6 +278,36 @@ export default function AdminArticleForm() {
     }
   };
 
+  /* ---------- réorganisation des blocs ---------- */
+  const moveBlockUp = (id) => {
+    setContent((p) => {
+      const blocks = [...p.blocks];
+      const index = blocks.findIndex(b => b.id === id);
+
+      if (index > 0) {
+        // Échanger avec le bloc précédent
+        [blocks[index - 1], blocks[index]] = [blocks[index], blocks[index - 1]];
+      }
+
+      return { ...p, blocks };
+    });
+  };
+
+  const moveBlockDown = (id) => {
+    setContent((p) => {
+      const blocks = [...p.blocks];
+      const index = blocks.findIndex(b => b.id === id);
+
+      if (index < blocks.length - 1) {
+        // Échanger avec le bloc suivant
+        [blocks[index], blocks[index + 1]] = [blocks[index + 1], blocks[index]];
+      }
+
+      return { ...p, blocks };
+    });
+  };
+
+
   /* ============== render ============== */
   if (loading) return <div className="loader">Chargement…</div>;
 
@@ -458,17 +488,39 @@ export default function AdminArticleForm() {
         {content.blocks.map((b, i) => (
           <div key={b.id} id={`block-${b.id}`} className="block">
             <div className="block__title">
-              <strong>
-                Bloc {i + 1} – {b.type}
-              </strong>
-              <button
-                className="btn btn--xs btn--red"
-                onClick={() => deleteBlock(b.id)}
-              >
-                Supprimer
-              </button>
+              <div className="block-info">
+                <strong>
+                  Bloc {i + 1} – {b.type}
+                </strong>
+              </div>
+              <div className="block-actions">
+                {/* ✅ BOUTONS DE RÉORGANISATION */}
+                <button
+                  className="btn btn--xs btn--grey"
+                  onClick={() => moveBlockUp(b.id)}
+                  disabled={i === 0} // Désactiver si c'est le premier bloc
+                  title="Déplacer vers le haut"
+                >
+                  ↑
+                </button>
+                <button
+                  className="btn btn--xs btn--grey"
+                  onClick={() => moveBlockDown(b.id)}
+                  disabled={i === content.blocks.length - 1} // Désactiver si c'est le dernier bloc
+                  title="Déplacer vers le bas"
+                >
+                  ↓
+                </button>
+                <button
+                  className="btn btn--xs btn--red"
+                  onClick={() => deleteBlock(b.id)}
+                >
+                  Supprimer
+                </button>
+              </div>
             </div>
 
+            {/* Reste de votre contenu de bloc inchangé */}
             <div className="field">
               <input
                 placeholder="Titre du bloc"
@@ -611,6 +663,7 @@ export default function AdminArticleForm() {
           </div>
         ))}
       </section>
+
       <section className="card">
         <div className="field">
           <label>Questions finales (optionnel)</label>

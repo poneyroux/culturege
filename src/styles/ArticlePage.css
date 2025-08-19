@@ -220,14 +220,6 @@
   text-align: center;
 }
 
-.block-questions .question-item {
-  background: white;
-  padding: 12px 16px;
-  margin: 10px 0;
-  border-radius: 8px;
-  border-left: 3px solid var(--theme-color, #3498db);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
 
 /* ───────────────────────── BOUTON PPT ───────────────────────── */
 .ppt-download {
