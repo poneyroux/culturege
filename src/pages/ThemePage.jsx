@@ -57,7 +57,7 @@ export default function ThemePage() {
         .select("*")
         .eq("theme_id", themeData.id)
         .eq("status", "published")
-        .order("created_at", { ascending: false });
+        .order("number", { ascending: false });
 
       if (articlesError) throw articlesError;
       setArticles(articlesData || []);
@@ -134,9 +134,8 @@ export default function ThemePage() {
       />
       {/* Contenu principal */}
       <div
-        className={`theme-page-content theme-container ${
-          menuOpen ? "hidden" : ""
-        }`}
+        className={`theme-page-content theme-container ${menuOpen ? "hidden" : ""
+          }`}
       >
         {/* En-tête du thème */}
         <div className="theme-header">
@@ -149,9 +148,8 @@ export default function ThemePage() {
         {uniqueCategories.length > 0 && (
           <div className="category-filters">
             <button
-              className={`filter-button ${
-                selectedCategory === "" ? "active" : ""
-              }`}
+              className={`filter-button ${selectedCategory === "" ? "active" : ""
+                }`}
               onClick={() => setSelectedCategory("")}
             >
               Tout afficher ({articles.length})
@@ -159,9 +157,8 @@ export default function ThemePage() {
             {uniqueCategories.map((category) => (
               <button
                 key={category}
-                className={`filter-button ${
-                  selectedCategory === category ? "active" : ""
-                }`}
+                className={`filter-button ${selectedCategory === category ? "active" : ""
+                  }`}
                 onClick={() => setSelectedCategory(category)}
               >
                 {category} (
