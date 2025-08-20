@@ -57,7 +57,7 @@ export default function ThemePage() {
         .select("*")
         .eq("theme_id", themeData.id)
         .eq("status", "published")
-        .order("order", { ascending: false });
+        .order("order", { ascending: true });
 
       if (articlesError) throw articlesError;
       setArticles(articlesData || []);
