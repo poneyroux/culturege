@@ -210,11 +210,11 @@ export default function ArticlePage() {
         {article.summary && (
           <p className="article-summary">{article.summary}</p>
         )}
-        {article.image_url && (
+        {/* {article.image_url && (
           <figure className="article-main-image">
             <img src={article.image_url} alt={article.title} />
           </figure>
-        )}
+        )} */}
 
         {/* ---- blocs ---- */}
         {blocks.map((block, index) => (
@@ -229,7 +229,14 @@ export default function ArticlePage() {
                   }}
                 />
               )}
-
+              {block.type === "image" && (
+                <figure className="block-image">
+                  <img
+                    src={block.data || block.content}
+                    alt={block.title || `image-${index}`}
+                  />
+                </figure>
+              )}
               {block.type === "video" && (
                 <div className="block-video">
                   <iframe
