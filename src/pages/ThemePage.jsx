@@ -185,13 +185,13 @@ export default function ThemePage() {
                 to={`/article/${article.slug}`}
                 className="article-card"
               >
-                {article.image_url && (
+                {/* {article.image_url && (
                   <img
                     src={article.image_url}
                     alt={article.title}
                     className="article-image"
                   />
-                )}
+                )} */}
 
                 <div className="article-content">
                   <h3 className="article-title-theme">{article.title}</h3>

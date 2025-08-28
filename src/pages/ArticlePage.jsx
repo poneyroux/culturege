@@ -229,14 +229,7 @@ export default function ArticlePage() {
                   }}
                 />
               )}
-              {block.type === "image" && (
-                <figure className="block-image">
-                  <img
-                    src={block.data || block.content}
-                    alt={block.title || `image-${index}`}
-                  />
-                </figure>
-              )}
+
               {block.type === "video" && (
                 <div className="block-video">
                   <iframe
