@@ -210,11 +210,7 @@ export default function ArticlePage() {
         {article.summary && (
           <p className="article-summary">{article.summary}</p>
         )}
-        {/* {article.image_url && (
-          <figure className="article-main-image">
-            <img src={article.image_url} alt={article.title} />
-          </figure>
-        )} */}
+
 
         {/* ---- blocs ---- */}
         {blocks.map((block, index) => (
